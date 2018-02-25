@@ -3,15 +3,16 @@ package requests
 import (
 	"bytes"
 	"crypto/tls"
-	"golang.org/x/net/http2"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
 	"net/http"
 	"net/url"
-	"strings"
-	"encoding/json"
-	"io"
-	"errors"
 	"regexp"
-	"fmt"
+	"strings"
+
+	"golang.org/x/net/http2"
 )
 
 type HttpCookie map[string]string
@@ -65,9 +66,9 @@ func reset(r *Request) {
 	}
 }
 
-func NewRequest() *Request {
+func NewRequest(client *http.Client) *Request {
 	r := &Request{
-		&http.Client{},
+		client,
 		nil,
 		nil,
 		"GET",
